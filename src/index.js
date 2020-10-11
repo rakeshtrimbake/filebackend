@@ -14,6 +14,12 @@ const connect = mysql.createConnection({
   database: "fileupload",
 });
 
+connect.connect(function(err) {
+  if (err) throw err;
+  console.log("Database Connected!");
+});
+
+
 const PORT = process.env.PORT || 4000;
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -44,7 +50,7 @@ app.post("/upload", async (req, res) => {
     read.on("end", function () {
       var sha1 = shasum.digest("hex");
       fs.unlinkSync("./src/" + req.file.originalname);
-      var data = "INSERT INTO filedata(filesize,sha1_format)values(?,?)";
+      var data = "INSERT INTO filedata(fileSize,sha1_format)values(?,?)";
       let values = [size, sha1];
       connect.query(data, values, function (err, result) {
         try {
